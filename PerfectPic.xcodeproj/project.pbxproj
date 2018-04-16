@@ -7,23 +7,35 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3AC9EB05207BE7630072AB16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9EB04207BE7630072AB16 /* UIKit.framework */; };
+		3AC9EB07207BE76A0072AB16 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9EB06207BE76A0072AB16 /* Photos.framework */; };
+		3AC9EB09207BE7810072AB16 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9EB08207BE7810072AB16 /* AVFoundation.framework */; };
 		3AD81CC2207BB47200857422 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CC1207BB47200857422 /* AppDelegate.swift */; };
-		3AD81CC4207BB47200857422 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CC3207BB47200857422 /* ViewController.swift */; };
 		3AD81CC7207BB47200857422 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AD81CC5207BB47200857422 /* Main.storyboard */; };
 		3AD81CCA207BB47200857422 /* PerfectPic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CC8207BB47200857422 /* PerfectPic.xcdatamodeld */; };
 		3AD81CCC207BB47400857422 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3AD81CCB207BB47400857422 /* Assets.xcassets */; };
 		3AD81CCF207BB47400857422 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AD81CCD207BB47400857422 /* LaunchScreen.storyboard */; };
+		3AD81CD7207BB4F400857422 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CD6207BB4F400857422 /* CameraViewController.swift */; };
+		3AD81CD9207BB51600857422 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CD8207BB51600857422 /* PhotoViewController.swift */; };
+		3AD81CDB207BB52500857422 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CDA207BB52500857422 /* SettingsViewController.swift */; };
+		3AD81CDD207BC4FF00857422 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CDC207BC4FF00857422 /* CameraController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3AD81CBE207BB47200857422 /* PerfectPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PerfectPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AC9EB04207BE7630072AB16 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3AC9EB06207BE76A0072AB16 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		3AC9EB08207BE7810072AB16 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		3AD81CC1207BB47200857422 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3AD81CC3207BB47200857422 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3AD81CC6207BB47200857422 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3AD81CC9207BB47200857422 /* PerfectPic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PerfectPic.xcdatamodel; sourceTree = "<group>"; };
 		3AD81CCB207BB47400857422 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3AD81CCE207BB47400857422 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3AD81CD0207BB47400857422 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3AD81CD6207BB4F400857422 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		3AD81CD8207BB51600857422 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
+		3AD81CDA207BB52500857422 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		3AD81CDC207BC4FF00857422 /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		3AD81CDF207BE58500857422 /* PerfectPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PerfectPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,38 +43,47 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AC9EB09207BE7810072AB16 /* AVFoundation.framework in Frameworks */,
+				3AC9EB07207BE76A0072AB16 /* Photos.framework in Frameworks */,
+				3AC9EB05207BE7630072AB16 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3AC9EB03207BE7620072AB16 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3AC9EB08207BE7810072AB16 /* AVFoundation.framework */,
+				3AC9EB06207BE76A0072AB16 /* Photos.framework */,
+				3AC9EB04207BE7630072AB16 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3AD81CB5207BB47100857422 = {
 			isa = PBXGroup;
 			children = (
 				3AD81CC0207BB47200857422 /* PerfectPic */,
-				3AD81CBF207BB47200857422 /* Products */,
+				3AD81CDF207BE58500857422 /* PerfectPic.app */,
+				3AC9EB03207BE7620072AB16 /* Frameworks */,
 			);
-			sourceTree = "<group>";
-		};
-		3AD81CBF207BB47200857422 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				3AD81CBE207BB47200857422 /* PerfectPic.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		3AD81CC0207BB47200857422 /* PerfectPic */ = {
 			isa = PBXGroup;
 			children = (
 				3AD81CC1207BB47200857422 /* AppDelegate.swift */,
-				3AD81CC3207BB47200857422 /* ViewController.swift */,
 				3AD81CC5207BB47200857422 /* Main.storyboard */,
 				3AD81CCB207BB47400857422 /* Assets.xcassets */,
 				3AD81CCD207BB47400857422 /* LaunchScreen.storyboard */,
 				3AD81CD0207BB47400857422 /* Info.plist */,
 				3AD81CC8207BB47200857422 /* PerfectPic.xcdatamodeld */,
+				3AD81CD6207BB4F400857422 /* CameraViewController.swift */,
+				3AD81CDC207BC4FF00857422 /* CameraController.swift */,
+				3AD81CD8207BB51600857422 /* PhotoViewController.swift */,
+				3AD81CDA207BB52500857422 /* SettingsViewController.swift */,
 			);
 			path = PerfectPic;
 			sourceTree = "<group>";
@@ -84,7 +105,7 @@
 			);
 			name = PerfectPic;
 			productName = PerfectPic;
-			productReference = 3AD81CBE207BB47200857422 /* PerfectPic.app */;
+			productReference = 3AD81CDF207BE58500857422 /* PerfectPic.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -111,7 +132,7 @@
 				Base,
 			);
 			mainGroup = 3AD81CB5207BB47100857422;
-			productRefGroup = 3AD81CBF207BB47200857422 /* Products */;
+			productRefGroup = 3AD81CB5207BB47100857422;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -138,9 +159,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AD81CDD207BC4FF00857422 /* CameraController.swift in Sources */,
 				3AD81CCA207BB47200857422 /* PerfectPic.xcdatamodeld in Sources */,
-				3AD81CC4207BB47200857422 /* ViewController.swift in Sources */,
+				3AD81CD7207BB4F400857422 /* CameraViewController.swift in Sources */,
 				3AD81CC2207BB47200857422 /* AppDelegate.swift in Sources */,
+				3AD81CD9207BB51600857422 /* PhotoViewController.swift in Sources */,
+				3AD81CDB207BB52500857422 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,12 +309,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = F6WTCFM4HX;
 				INFOPLIST_FILE = PerfectPic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = Jligh.PerfectPic;
+				PRODUCT_BUNDLE_IDENTIFIER = Jligh.AutoAperture;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -302,12 +327,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = F6WTCFM4HX;
 				INFOPLIST_FILE = PerfectPic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = Jligh.PerfectPic;
+				PRODUCT_BUNDLE_IDENTIFIER = Jligh.AutoAperture;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
