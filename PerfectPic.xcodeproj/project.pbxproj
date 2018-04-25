@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A9D2F6C2090387A00DD73D8 /* CompositionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D2F6B2090387A00DD73D8 /* CompositionController.swift */; };
 		3AC9EB05207BE7630072AB16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9EB04207BE7630072AB16 /* UIKit.framework */; };
 		3AC9EB07207BE76A0072AB16 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9EB06207BE76A0072AB16 /* Photos.framework */; };
 		3AC9EB09207BE7810072AB16 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9EB08207BE7810072AB16 /* AVFoundation.framework */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A9D2F6B2090387A00DD73D8 /* CompositionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionController.swift; sourceTree = "<group>"; };
 		3AC9EB04207BE7630072AB16 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3AC9EB06207BE76A0072AB16 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		3AC9EB08207BE7810072AB16 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -84,6 +86,7 @@
 				3AD81CDC207BC4FF00857422 /* CameraController.swift */,
 				3AD81CD8207BB51600857422 /* PhotoViewController.swift */,
 				3AD81CDA207BB52500857422 /* SettingsViewController.swift */,
+				3A9D2F6B2090387A00DD73D8 /* CompositionController.swift */,
 			);
 			path = PerfectPic;
 			sourceTree = "<group>";
@@ -162,6 +165,7 @@
 				3AD81CDD207BC4FF00857422 /* CameraController.swift in Sources */,
 				3AD81CCA207BB47200857422 /* PerfectPic.xcdatamodeld in Sources */,
 				3AD81CD7207BB4F400857422 /* CameraViewController.swift in Sources */,
+				3A9D2F6C2090387A00DD73D8 /* CompositionController.swift in Sources */,
 				3AD81CC2207BB47200857422 /* AppDelegate.swift in Sources */,
 				3AD81CD9207BB51600857422 /* PhotoViewController.swift in Sources */,
 				3AD81CDB207BB52500857422 /* SettingsViewController.swift in Sources */,
