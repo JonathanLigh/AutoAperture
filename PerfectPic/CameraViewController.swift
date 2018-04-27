@@ -9,13 +9,15 @@
 import UIKit
 import Photos
 
-class CameraViewController: UIViewController {
+class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     let cameraController = CameraController()
     let compositionController = CompositionController()
     @IBOutlet weak var previewView: UIView!
     @IBOutlet weak var compositionView: UIView!
     @IBOutlet weak var toggleFlashButton: UIButton!
     @IBOutlet weak var toggleCameraButton: UIButton!
+    @IBOutlet weak var compPickerView: UIPickerView!
+    
     @IBAction func toggleFlash(_ sender: UIButton) {
         if cameraController.flashMode == .on {
             cameraController.flashMode = .off
@@ -74,25 +76,46 @@ class CameraViewController: UIViewController {
             }
         }
     }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.compositionController.compositions.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return self.compositionController.compositions[row].getName()
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.compositionController.currentComposition = self.compositionController.compositions[row]
+        self.compositionController.drawCurrentBezierPath(view: self.compositionView)
+    }
+    
 }
 
 extension CameraViewController {
-    override func viewDidLoad() {
-        func configureCameraController() {
-            cameraController.prepare {(error) in
-                if let error = error {
-                    print(error)
-                }
-                
-                try? self.cameraController.displayPreview(on: self.previewView)
+    
+    func configureCameraController() {
+        cameraController.prepare {(error) in
+            if let error = error {
+                print(error)
             }
+            
+            try? self.cameraController.displayPreview(on: self.previewView)
         }
-        
-        func configureCompositionController() {
-            self.compositionController.drawCurrentBezierPath(view: self.compositionView)
-        }
-        
+    }
+    
+    func configureCompositionController() {
+        self.compositionController.drawCurrentBezierPath(view: self.compositionView)
+    }
+    
+    override func viewDidLoad() {
         super.viewDidLoad()
+        self.compPickerView.delegate = self
+        self.compPickerView.dataSource = self
         configureCameraController()
         configureCompositionController()
     }

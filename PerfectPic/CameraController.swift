@@ -21,6 +21,8 @@ class CameraController: NSObject {
     var previewLayer: AVCaptureVideoPreviewLayer?
     var flashMode = AVCaptureDevice.FlashMode.off
     var photoCaptureCompletionBlock: ((UIImage?, Error?) -> Void)?
+    let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy : CIDetectorAccuracyLow])
+    let output = AVCaptureVideoDataOutput()
 }
 
 extension CameraController {
@@ -29,6 +31,7 @@ extension CameraController {
             self.captureSession = AVCaptureSession()
             self.captureSession?.sessionPreset = AVCaptureSession.Preset.photo
         }
+        
         func configureCaptureDevices() throws {
             let session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .unspecified)
             
@@ -77,12 +80,15 @@ extension CameraController {
         
         func configurePhotoOutput() throws {
             guard let captureSession = self.captureSession else { throw CameraControllerError.captureSessionIsMissing }
-            
             self.photoOutput = AVCapturePhotoOutput()
             self.photoOutput!.setPreparedPhotoSettingsArray([AVCapturePhotoSettings(format: [AVVideoCodecKey : AVVideoCodecType.jpeg])], completionHandler: nil)
             
-            if captureSession.canAddOutput(self.photoOutput!) { captureSession.addOutput(self.photoOutput!) }
+            if captureSession.canAddOutput(self.photoOutput!) {
+                captureSession.addOutput(self.photoOutput!)
+            }
             
+            let queue = DispatchQueue(label: "output.queue")
+            self.output.setSampleBufferDelegate(self as? AVCaptureVideoDataOutputSampleBufferDelegate, queue: queue)
             captureSession.startRunning()
         }
         
@@ -118,7 +124,7 @@ extension CameraController {
         self.previewLayer?.connection?.videoOrientation = .portrait
         
         view.layer.insertSublayer(self.previewLayer!, at: 0)
-        self.previewLayer?.frame = view.frame //hmm might mean to set it to previewView
+        self.previewLayer?.frame = view.frame
     }
     
     func switchCameras() throws {
@@ -170,10 +176,17 @@ extension CameraController {
             try switchToFrontCamera()
         }
         
+        output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String : NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+        output.alwaysDiscardsLateVideoFrames = true
+        
+        if captureSession.canAddOutput(output) {
+            captureSession.addOutput(output)
+        }
+        
         captureSession.commitConfiguration()
     }
     
-    func captureImage(completion: @escaping (UIImage?, Error?) -> Void) {
+    func captureImage (completion: @escaping (UIImage?, Error?) -> Void) {
         guard let captureSession = captureSession, captureSession.isRunning else { completion(nil, CameraControllerError.captureSessionIsMissing); return }
         
         let settings = AVCapturePhotoSettings()
@@ -181,6 +194,111 @@ extension CameraController {
         
         self.photoOutput?.capturePhoto(with: settings, delegate: self)
         self.photoCaptureCompletionBlock = completion
+    }
+    
+    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+        let attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate)
+        let ciImage = CIImage(cvImageBuffer: pixelBuffer!, options: attachments as! [String : Any]?)
+        let options: [String : Any] = [CIDetectorImageOrientation: exifOrientation(orientation: UIDevice.current.orientation),
+                                       CIDetectorSmile: true,
+                                       CIDetectorEyeBlink: true]
+        let allFeatures = faceDetector?.features(in: ciImage, options: options)
+        let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
+        let cleanAperture = CMVideoFormatDescriptionGetCleanAperture(formatDescription!, false)
+        
+        guard let features = allFeatures else {return}
+        
+        for feature in features {
+            if let faceFeature = feature as? CIFaceFeature {
+                let faceRect = calculateFaceRect(facePosition: faceFeature.mouthPosition, faceBounds: faceFeature.bounds, clearAperture: cleanAperture)
+                update(with: faceRect)
+            }
+        }
+    }
+
+    func update(with faceRect: CGRect) {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.2) {
+                self.previewLayer?.frame = faceRect
+            }
+        }
+    }
+    
+    func exifOrientation(orientation: UIDeviceOrientation) -> Int {
+        switch orientation {
+        case .portraitUpsideDown:
+            return 8
+        case .landscapeLeft:
+            return 3
+        case .landscapeRight:
+            return 1
+        default:
+            return 6
+        }
+    }
+    
+    func videoBox(frameSize: CGSize, apertureSize: CGSize) -> CGRect {
+        let apertureRatio = apertureSize.height / apertureSize.width
+        let viewRatio = frameSize.width / frameSize.height
+        
+        var size = CGSize.zero
+        
+        if (viewRatio > apertureRatio) {
+            size.width = frameSize.width
+            size.height = apertureSize.width * (frameSize.width / apertureSize.height)
+        } else {
+            size.width = apertureSize.height * (frameSize.height / apertureSize.width)
+            size.height = frameSize.height
+        }
+        
+        var videoBox = CGRect(origin: .zero, size: size)
+        
+        if (size.width < frameSize.width) {
+            videoBox.origin.x = (frameSize.width - size.width) / 2.0
+        } else {
+            videoBox.origin.x = (size.width - frameSize.width) / 2.0
+        }
+        
+        if (size.height < frameSize.height) {
+            videoBox.origin.y = (frameSize.height - size.height) / 2.0
+        } else {
+            videoBox.origin.y = (size.height - frameSize.height) / 2.0
+        }
+        
+        return videoBox
+    }
+    
+    func calculateFaceRect(facePosition: CGPoint, faceBounds: CGRect, clearAperture: CGRect) -> CGRect {
+        let parentFrameSize = previewLayer!.frame.size
+        let previewBox = videoBox(frameSize: parentFrameSize, apertureSize: clearAperture.size)
+        
+        var faceRect = faceBounds
+        
+        swap(&faceRect.size.width, &faceRect.size.height)
+        swap(&faceRect.origin.x, &faceRect.origin.y)
+        
+        let widthScaleBy = previewBox.size.width / clearAperture.size.height
+        let heightScaleBy = previewBox.size.height / clearAperture.size.width
+        
+        faceRect.size.width *= widthScaleBy
+        faceRect.size.height *= heightScaleBy
+        faceRect.origin.x *= widthScaleBy
+        faceRect.origin.y *= heightScaleBy
+        
+        faceRect = faceRect.offsetBy(dx: 0.0, dy: previewBox.origin.y)
+        let frame = CGRect(x: parentFrameSize.width - faceRect.origin.x - faceRect.size.width / 2.0 - previewBox.origin.x / 2.0, y: faceRect.origin.y, width: faceRect.width, height: faceRect.height)
+        
+        return frame
+    }
+    
+    func stopCaptureSession() {
+        self.captureSession?.stopRunning()
+        if let inputs = captureSession?.inputs as? [AVCaptureDeviceInput] {
+            for input in inputs {
+                self.captureSession?.removeInput(input)
+            }
+        }
     }
 }
 

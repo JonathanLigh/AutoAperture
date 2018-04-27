@@ -27,17 +27,6 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fuZ-V8-A8N" userLabel="ToggleCameraButton">
-                                        <rect key="frame" x="313" y="66" width="54" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" button="YES" image="YES"/>
-                                        </accessibility>
-                                        <state key="normal" title="Camera"/>
-                                        <connections>
-                                            <action selector="switchCameras:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dzq-vz-Vc5"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7oK-0k-qJr" userLabel="ToggleFlashButton">
                                         <rect key="frame" x="330" y="28" width="37" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
@@ -49,6 +38,22 @@
                                             <action selector="toggleFlash:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bVZ-zp-2DV"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fuZ-V8-A8N" userLabel="ToggleCameraButton">
+                                        <rect key="frame" x="313" y="66" width="54" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <accessibilityTraits key="traits" button="YES" image="YES"/>
+                                        </accessibility>
+                                        <state key="normal" title="Camera"/>
+                                        <connections>
+                                            <action selector="switchCameras:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dzq-vz-Vc5"/>
+                                        </connections>
+                                    </button>
+                                    <pickerView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NHE-u2-pQL">
+                                        <rect key="frame" x="0.0" y="581" width="375" height="86"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </pickerView>
                                 </subviews>
                             </view>
                         </subviews>
@@ -56,6 +61,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="compPickerView" destination="NHE-u2-pQL" id="16Z-iX-a49"/>
                         <outlet property="compositionView" destination="pnL-bp-hWZ" id="jef-GH-Fey"/>
                         <outlet property="previewView" destination="L9Z-iy-jYS" id="0Fu-2d-kmB"/>
                         <outlet property="toggleCameraButton" destination="fuZ-V8-A8N" id="Q6T-9j-C8U"/>
@@ -64,7 +70,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-191.19999999999999" y="33.733133433283363"/>
+            <point key="canvasLocation" x="748" y="33.733133433283363"/>
         </scene>
     </scenes>
 </document>
