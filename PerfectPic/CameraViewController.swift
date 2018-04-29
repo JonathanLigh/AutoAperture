@@ -13,11 +13,11 @@ class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     let cameraController = CameraController()
     let compositionController = CompositionController()
     @IBOutlet weak var previewView: UIView!
-    @IBOutlet weak var compositionView: UIView!
     @IBOutlet weak var toggleFlashButton: UIButton!
     @IBOutlet weak var toggleCameraButton: UIButton!
     @IBOutlet weak var compPickerView: UIPickerView!
     
+    @IBOutlet weak var takePhotoButton: UIButton!
     @IBAction func toggleFlash(_ sender: UIButton) {
         if cameraController.flashMode == .on {
             cameraController.flashMode = .off
@@ -91,7 +91,7 @@ class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.compositionController.currentComposition = self.compositionController.compositions[row]
-        self.compositionController.drawCurrentBezierPath(view: self.compositionView)
+        self.compositionController.drawCurrentBezierPath(view: self.previewView)
     }
     
 }
@@ -109,7 +109,7 @@ extension CameraViewController {
     }
     
     func configureCompositionController() {
-        self.compositionController.drawCurrentBezierPath(view: self.compositionView)
+        self.compositionController.drawCurrentBezierPath(view: self.previewView)
     }
     
     override func viewDidLoad() {
@@ -121,13 +121,13 @@ extension CameraViewController {
     }
     
     // captures image on screen
-    func captureImage() {
+    @IBAction func captureImage(_ sender: UIButton) {
         cameraController.captureImage { (image, error) in
             guard let image = image else {
                 print(error ?? "Image capture error")
                 return
             }
-            
+
             try? PHPhotoLibrary.shared().performChangesAndWait {
                 PHAssetChangeRequest.creationRequestForAsset(from: image)
             }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sWl-uZ-Qd2">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -11,66 +11,87 @@
     </dependencies>
     <scenes>
         <!--Camera View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <scene sceneID="RMM-2R-8gb">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="CameraViewController" customModule="PerfectPic" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                <viewController id="sWl-uZ-Qd2" customClass="CameraViewController" customModule="PerfectPic" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SwD-1e-4wd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L9Z-iy-jYS" userLabel="PreviewView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ld4-K5-bbw">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pnL-bp-hWZ">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7oK-0k-qJr" userLabel="ToggleFlashButton">
-                                        <rect key="frame" x="330" y="28" width="37" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" button="YES" image="YES"/>
-                                        </accessibility>
-                                        <state key="normal" title="Flash"/>
-                                        <connections>
-                                            <action selector="toggleFlash:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bVZ-zp-2DV"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fuZ-V8-A8N" userLabel="ToggleCameraButton">
-                                        <rect key="frame" x="313" y="66" width="54" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" button="YES" image="YES"/>
-                                        </accessibility>
-                                        <state key="normal" title="Camera"/>
-                                        <connections>
-                                            <action selector="switchCameras:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dzq-vz-Vc5"/>
-                                        </connections>
-                                    </button>
-                                    <pickerView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NHE-u2-pQL">
+                                    <pickerView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fcz-Ju-g1A">
                                         <rect key="frame" x="0.0" y="581" width="375" height="86"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </pickerView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rWd-ya-IPM">
+                                        <rect key="frame" x="315" y="16" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.40781933069229126" green="0.38916049956941695" blue="0.10160441609690614" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="3NZ-hC-giW"/>
+                                            <constraint firstAttribute="height" constant="44" id="Fd8-1B-aao"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="toggleFlash:" destination="sWl-uZ-Qd2" eventType="touchUpInside" id="jU3-nu-otr"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="URG-3r-6K4">
+                                        <rect key="frame" x="315" y="60" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.40781933069229126" green="0.061777921057384812" blue="0.072861226374626678" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="D6Y-Ca-Tqr"/>
+                                            <constraint firstAttribute="height" constant="44" id="Hpg-dq-HgB"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="switchCameras:" destination="sWl-uZ-Qd2" eventType="touchUpInside" id="5BI-7k-MFj"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ow0-mV-qNO">
+                                        <rect key="frame" x="320" y="518" width="55" height="55"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="55" id="7bH-2D-bC2"/>
+                                            <constraint firstAttribute="width" constant="55" id="VWS-Cl-k43"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="captureImage:" destination="sWl-uZ-Qd2" eventType="touchUpInside" id="MTM-Ao-3Ko"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="Ow0-mV-qNO" secondAttribute="trailing" id="BKU-lk-9NR"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ow0-mV-qNO" secondAttribute="bottom" constant="94" id="Ddi-ZX-4iC"/>
+                                    <constraint firstAttribute="trailing" secondItem="URG-3r-6K4" secondAttribute="trailing" constant="16" id="EYN-s2-FYW"/>
+                                    <constraint firstItem="URG-3r-6K4" firstAttribute="top" secondItem="rWd-ya-IPM" secondAttribute="bottom" id="Q69-kP-0n9"/>
+                                    <constraint firstAttribute="trailing" secondItem="rWd-ya-IPM" secondAttribute="trailing" constant="16" id="jD4-Q4-HlG"/>
+                                    <constraint firstItem="rWd-ya-IPM" firstAttribute="top" secondItem="ld4-K5-bbw" secondAttribute="top" constant="16" id="zlk-8e-dbd"/>
+                                </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ld4-K5-bbw" firstAttribute="bottom" secondItem="rd9-Jf-qo4" secondAttribute="bottom" id="45P-k7-gP1"/>
+                            <constraint firstAttribute="trailing" secondItem="ld4-K5-bbw" secondAttribute="trailing" id="dof-gn-Jht"/>
+                            <constraint firstItem="ld4-K5-bbw" firstAttribute="top" secondItem="SwD-1e-4wd" secondAttribute="top" id="usT-L3-cGo"/>
+                            <constraint firstItem="ld4-K5-bbw" firstAttribute="leading" secondItem="SwD-1e-4wd" secondAttribute="leading" id="wQk-sh-FyM"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="rd9-Jf-qo4"/>
                     </view>
                     <connections>
-                        <outlet property="compPickerView" destination="NHE-u2-pQL" id="16Z-iX-a49"/>
-                        <outlet property="compositionView" destination="pnL-bp-hWZ" id="jef-GH-Fey"/>
-                        <outlet property="previewView" destination="L9Z-iy-jYS" id="0Fu-2d-kmB"/>
-                        <outlet property="toggleCameraButton" destination="fuZ-V8-A8N" id="Q6T-9j-C8U"/>
-                        <outlet property="toggleFlashButton" destination="7oK-0k-qJr" id="a9G-uu-nIX"/>
+                        <outlet property="compPickerView" destination="fcz-Ju-g1A" id="yx5-kS-Yux"/>
+                        <outlet property="previewView" destination="ld4-K5-bbw" id="lb2-Lk-aWW"/>
+                        <outlet property="takePhotoButton" destination="Ow0-mV-qNO" id="p8F-t7-y3w"/>
+                        <outlet property="toggleCameraButton" destination="URG-3r-6K4" id="AT4-Jq-ECJ"/>
+                        <outlet property="toggleFlashButton" destination="rWd-ya-IPM" id="Ekh-04-yWi"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sZ3-4L-62O" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="748" y="33.733133433283363"/>
+            <point key="canvasLocation" x="808.79999999999995" y="753.37331334332839"/>
         </scene>
     </scenes>
 </document>
