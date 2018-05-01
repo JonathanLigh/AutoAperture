@@ -12,6 +12,7 @@ import Photos
 class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     let cameraController = CameraController()
     let compositionController = CompositionController()
+    
     @IBOutlet weak var previewView: UIView!
     @IBOutlet weak var toggleFlashButton: UIButton!
     @IBOutlet weak var toggleCameraButton: UIButton!
@@ -62,9 +63,7 @@ class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerView
                         try device.lockForConfiguration()
                         
                         device.focusPointOfInterest = focusPoint
-                        //device.focusMode = .continuousAutoFocus
                         device.focusMode = .autoFocus
-                        //device.focusMode = .locked
                         device.exposurePointOfInterest = focusPoint
                         device.exposureMode = AVCaptureDevice.ExposureMode.continuousAutoExposure
                         device.unlockForConfiguration()
@@ -112,12 +111,64 @@ extension CameraViewController {
         self.compositionController.drawCurrentBezierPath(view: self.previewView)
     }
     
+    //  updates the main view when the camera is rotated
+    private func updatePreviewLayer(layer: AVCaptureConnection, orientation: AVCaptureVideoOrientation) {
+        layer.videoOrientation = orientation
+        cameraController.previewLayer?.frame = self.view.bounds
+        compositionController.drawCurrentBezierPath(view: previewView)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.compPickerView.delegate = self
         self.compPickerView.dataSource = self
+        self.previewView.frame = self.view.bounds
+
         configureCameraController()
         configureCompositionController()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.previewView.addSubview(self.cameraController.faceView)
+        self.previewView.bringSubview(toFront: self.cameraController.faceView)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if let connection =  self.cameraController.previewLayer?.connection  {
+
+            let currentDevice: UIDevice = UIDevice.current
+
+            let orientation: UIDeviceOrientation = currentDevice.orientation
+
+            let previewLayerConnection : AVCaptureConnection = connection
+
+            if previewLayerConnection.isVideoOrientationSupported {
+                switch (orientation) {
+                case .portrait: updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
+
+                    break
+
+                case .landscapeRight: updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeLeft)
+
+                    break
+
+                case .landscapeLeft: updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeRight)
+
+                    break
+
+                case .portraitUpsideDown: updatePreviewLayer(layer: previewLayerConnection, orientation: .portraitUpsideDown)
+
+                    break
+
+                default: updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
+
+                    break
+                }
+            }
+        }
     }
     
     // captures image on screen
