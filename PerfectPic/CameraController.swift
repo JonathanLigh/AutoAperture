@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import Photos
 
 class CameraController: NSObject {
     var captureSession: AVCaptureSession?
@@ -22,13 +23,17 @@ class CameraController: NSObject {
     var previewLayer: AVCaptureVideoPreviewLayer?
     var flashMode = AVCaptureDevice.FlashMode.off
     var photoCaptureCompletionBlock: ((UIImage?, Error?) -> Void)?
-    let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy : CIDetectorAccuracyLow])
+    let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy : CIDetectorAccuracyHigh])
     let faceView: FaceView = {
         let faceView = FaceView()
         faceView.setup()
         
         return faceView
     }()
+    var currentComposition: Composition?
+    var autoCaptureInProgress: Bool = false
+    var captureTimer = Timer()
+    var timeLeft = 3
 }
 
 extension CameraController {
@@ -210,15 +215,75 @@ extension CameraController {
         self.photoCaptureCompletionBlock = completion
     }
     
+    
+    // This method is called every second to decrement the timeleft variable and take a picture when timeLeft = 0
+    // has @objc so it can be refered to in timer context
+    @objc func countDown() {
+        // if all the rects in getGoldenRegions have the center point of faceView in them then true else false\
+        var isFaceInPicZone = false
+        // self.currentComposition?.getGoldenRegions(frame: (self.previewLayer?.frame)!)
+        if let regions = (self.currentComposition?.getGoldenRegions(frame: (self.previewLayer?.frame)!)) {
+            for region in regions {
+                // if middle of face frame in is in golden region
+                if region.contains(CGPoint(x: self.faceView.frame.midX, y: self.faceView.frame.midY)) {
+                    isFaceInPicZone = true
+                    // exit loop and proceed
+                    break
+                }
+            }
+        }
+
+        if self.faceView.eyesOpen && isFaceInPicZone  {
+            print(self.timeLeft) // debug printing
+            self.timeLeft -= 1
+            self.faceView.faceLabel.text = String(self.timeLeft)
+            // update text on timer (instead of a timer label, we could use what the face rect is... derp we should have done that from the start)
+            if self.timeLeft == 0 {
+                // change timer label to done
+                // remove the UILabel and sublayer
+                
+                // takes a picture of the screen and saves it to photos
+                print("Picture taken")
+                self.captureImage { (image, error) in
+                    guard let image = image else {
+                        print(error ?? "Image capture error")
+                        return
+                    }
+                    
+                    try? PHPhotoLibrary.shared().performChangesAndWait {
+                        PHAssetChangeRequest.creationRequestForAsset(from: image)
+                    }
+                }
+                    
+                // invalidate the current timer
+                self.captureTimer.invalidate()
+                
+                // instatiate a new timer
+                self.captureTimer = Timer()
+                // reset timer
+                self.timeLeft = 3
+                self.faceView.faceLabel.text = String(self.timeLeft)
+                // set this to false so another autoCapture session can begin again
+                self.autoCaptureInProgress = false
+            }
+        } else {
+            // else reset timer
+            self.timeLeft = 3
+            self.faceView.faceLabel.text = String(self.timeLeft)
+            
+        }
+    }
 }
 
 extension CameraController: AVCapturePhotoCaptureDelegate {
     public func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Swift.Error?) {
         if let error = error { self.photoCaptureCompletionBlock?(nil, error) }
 
-        else if let buffer = photoSampleBuffer, let data = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: buffer, previewPhotoSampleBuffer: nil),
+        else if let buffer = photoSampleBuffer,
+            let data = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: buffer, previewPhotoSampleBuffer: nil),
             let image = UIImage(data: data) {
 
+            
             self.photoCaptureCompletionBlock?(image, nil)
         }
 
@@ -232,25 +297,32 @@ extension CameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
         let attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate)
+        
         let ciImage = CIImage(cvImageBuffer: pixelBuffer!, options: attachments as! [String : Any]?)
+        let ciImageSize = ciImage.extent.size
+        var transform = CGAffineTransform(scaleX: 1, y: -1)
+        transform = transform.translatedBy(x: 0, y: -ciImageSize.height)
+        
         let options: [String : Any] = [CIDetectorImageOrientation: exifOrientation(orientation: UIDevice.current.orientation),
-                                       CIDetectorSmile: true,
-                                       CIDetectorEyeBlink: true]
+                                       CIDetectorEyeBlink: true,
+                                       CIDetectorFocalLength: true]
+        
         let allFeatures = faceDetector?.features(in: ciImage, options: options)
         
         let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
         let cleanAperture = CMVideoFormatDescriptionGetCleanAperture(formatDescription!, false)
         
-        guard let features = allFeatures else { return }
+        guard let faces = allFeatures else { return }
         
-        for feature in features {
-            if let faceFeature = feature as? CIFaceFeature {
-                let faceRect = calculateFaceRect(facePosition: faceFeature.mouthPosition, faceBounds: faceFeature.bounds, clearAperture: cleanAperture)
-                update(with: faceRect)
-            }
+        for face in faces as! [CIFaceFeature] {
+            let faceViewBounds = face.bounds
+            
+            let faceRect = calculateFaceRect(facePosition: face.mouthPosition, faceBounds: faceViewBounds, clearAperture: cleanAperture)
+            update(with: faceRect, eyesOpen: face.hasLeftEyePosition && face.hasRightEyePosition)
         }
         
-        if features.count == 0 {
+        autoCaptureImage()
+        if faces.count == 0 {
             DispatchQueue.main.async {
                 self.faceView.alpha = 0.0
             }
@@ -261,9 +333,9 @@ extension CameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
         switch orientation {
         case .portraitUpsideDown:
             return 8
-        case .landscapeLeft:
-            return 3
         case .landscapeRight:
+            return 3
+        case .landscapeLeft:
             return 1
         default:
             return 6
@@ -326,11 +398,25 @@ extension CameraController: AVCaptureVideoDataOutputSampleBufferDelegate {
 }
 
 extension CameraController {
-    func update(with faceRect: CGRect) {
+    //  updates facial rectangle from AVCaptureVideoDataOutputSampleBufferDelegate
+    func update(with faceRect: CGRect, eyesOpen: Bool) {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.2) {
-                self.faceView.alpha = 1.0
+                self.faceView.alpha = 0.5
                 self.faceView.frame = faceRect
+                self.faceView.eyesOpen = eyesOpen
+            }
+        }
+    }
+    
+    // async takes photo after facial rectangle is within guidline's "golden region"
+    func autoCaptureImage() {
+        if (!self.autoCaptureInProgress) {
+            // block this off before asynchronicity is begun by setting autoCaptureInProgress to true
+            self.autoCaptureInProgress = true
+            DispatchQueue.main.async {
+                // instatiate timer
+                self.captureTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(CameraController.countDown), userInfo: nil, repeats: true)
             }
         }
     }
@@ -356,12 +442,16 @@ class FaceView: UIView {
     
     lazy var faceLabel: UILabel = {
         let faceLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))
-        
+        faceLabel.textAlignment = .center
+        faceLabel.textColor = UIColor.white
+        faceLabel.adjustsFontSizeToFitWidth = true
         return faceLabel
     }()
     
+    var eyesOpen: Bool = false
+    
     func setup() {
-        layer.borderColor = UIColor.red.withAlphaComponent(0.7).cgColor
+        layer.borderColor = UIColor.red.withAlphaComponent(0.5).cgColor
         layer.borderWidth = 5.0
         
         addSubview(faceLabel)

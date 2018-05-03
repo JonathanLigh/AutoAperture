@@ -17,8 +17,6 @@
 		3AD81CCC207BB47400857422 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3AD81CCB207BB47400857422 /* Assets.xcassets */; };
 		3AD81CCF207BB47400857422 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AD81CCD207BB47400857422 /* LaunchScreen.storyboard */; };
 		3AD81CD7207BB4F400857422 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CD6207BB4F400857422 /* CameraViewController.swift */; };
-		3AD81CD9207BB51600857422 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CD8207BB51600857422 /* PhotoViewController.swift */; };
-		3AD81CDB207BB52500857422 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CDA207BB52500857422 /* SettingsViewController.swift */; };
 		3AD81CDD207BC4FF00857422 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD81CDC207BC4FF00857422 /* CameraController.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,8 +32,6 @@
 		3AD81CCE207BB47400857422 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3AD81CD0207BB47400857422 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3AD81CD6207BB4F400857422 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
-		3AD81CD8207BB51600857422 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
-		3AD81CDA207BB52500857422 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3AD81CDC207BC4FF00857422 /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		3AD81CDF207BE58500857422 /* PerfectPic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PerfectPic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -84,8 +80,6 @@
 				3AD81CC8207BB47200857422 /* PerfectPic.xcdatamodeld */,
 				3AD81CD6207BB4F400857422 /* CameraViewController.swift */,
 				3AD81CDC207BC4FF00857422 /* CameraController.swift */,
-				3AD81CD8207BB51600857422 /* PhotoViewController.swift */,
-				3AD81CDA207BB52500857422 /* SettingsViewController.swift */,
 				3A9D2F6B2090387A00DD73D8 /* CompositionController.swift */,
 			);
 			path = PerfectPic;
@@ -167,8 +161,6 @@
 				3AD81CD7207BB4F400857422 /* CameraViewController.swift in Sources */,
 				3A9D2F6C2090387A00DD73D8 /* CompositionController.swift in Sources */,
 				3AD81CC2207BB47200857422 /* AppDelegate.swift in Sources */,
-				3AD81CD9207BB51600857422 /* PhotoViewController.swift in Sources */,
-				3AD81CDB207BB52500857422 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

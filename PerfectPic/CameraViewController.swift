@@ -9,23 +9,27 @@
 import UIKit
 import Photos
 
-class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class CameraViewController: UIViewController {
     let cameraController = CameraController()
     let compositionController = CompositionController()
-    
     @IBOutlet weak var previewView: UIView!
     @IBOutlet weak var toggleFlashButton: UIButton!
     @IBOutlet weak var toggleCameraButton: UIButton!
     @IBOutlet weak var compPickerView: UIPickerView!
     
     @IBOutlet weak var takePhotoButton: UIButton!
+    
+}
+
+extension CameraViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    
     @IBAction func toggleFlash(_ sender: UIButton) {
         if cameraController.flashMode == .on {
             cameraController.flashMode = .off
-//            toggleFlashButton.setImage(#imageLiteral(resourceName: "Flash Off Icon"), for: .normal)
+            //            toggleFlashButton.setImage(#imageLiteral(resourceName: "Flash Off Icon"), for: .normal)
         } else {
             cameraController.flashMode = .on
-//            toggleFlashButton.setImage(#imageLiteral(resourceName: "Flash On Icon"), for: .normal)
+            //            toggleFlashButton.setImage(#imageLiteral(resourceName: "Flash On Icon"), for: .normal)
         }
     }
     @IBAction func switchCameras(_ sender: UIButton) {
@@ -40,10 +44,10 @@ class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         // This is where we will change the icon of the button
         switch cameraController.currentCameraPosition {
         case .some(.front): break
-//            toggleCameraButton.setImage(#imageLiteral(resourceName: "Front Camera Icon"), for: .normal)
+            //            toggleCameraButton.setImage(#imageLiteral(resourceName: "Front Camera Icon"), for: .normal)
             
         case .some(.rear): break
-//            toggleCameraButton.setImage(#imageLiteral(resourceName: "Rear Camera Icon"), for: .normal)
+            //            toggleCameraButton.setImage(#imageLiteral(resourceName: "Rear Camera Icon"), for: .normal)
             
         case .none:
             return
@@ -57,20 +61,23 @@ class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerView
             let y = 1.0 - touchPoint.location(in: previewView).x / screenSize.width
             let focusPoint = CGPoint(x: x, y: y)
             
-            if let device = cameraController.currentCaptureDevice {
-                if device.isFocusPointOfInterestSupported {
-                    do {
-                        try device.lockForConfiguration()
-                        
-                        device.focusPointOfInterest = focusPoint
-                        device.focusMode = .autoFocus
-                        device.exposurePointOfInterest = focusPoint
-                        device.exposureMode = AVCaptureDevice.ExposureMode.continuousAutoExposure
-                        device.unlockForConfiguration()
-                    }
-                    catch {
-                        // just ignore
-                    }
+            focusOnPoint(point: focusPoint, device: self.cameraController.currentCaptureDevice)
+        }
+    }
+    
+    func focusOnPoint(point: CGPoint, device: AVCaptureDevice?) {
+        if let device = device {
+            if device.isFocusPointOfInterestSupported {
+                do {
+                    try device.lockForConfiguration()
+                    
+                    device.focusPointOfInterest = point
+                    device.focusMode = .autoFocus
+                    device.exposurePointOfInterest = point
+                    device.exposureMode = AVCaptureDevice.ExposureMode.continuousAutoExposure
+                    device.unlockForConfiguration()
+                } catch {
+                    // do nothing
                 }
             }
         }
@@ -90,9 +97,9 @@ class CameraViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.compositionController.currentComposition = self.compositionController.compositions[row]
+        self.cameraController.currentComposition = self.compositionController.compositions[row]
         self.compositionController.drawCurrentBezierPath(view: self.previewView)
     }
-    
 }
 
 extension CameraViewController {
@@ -105,6 +112,7 @@ extension CameraViewController {
             
             try? self.cameraController.displayPreview(on: self.previewView)
         }
+        
     }
     
     func configureCompositionController() {
@@ -126,49 +134,13 @@ extension CameraViewController {
 
         configureCameraController()
         configureCompositionController()
+        self.cameraController.currentComposition = self.compositionController.currentComposition
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+        AppDelegate.AppUtility.lockOrientation(.portrait)
         self.previewView.addSubview(self.cameraController.faceView)
         self.previewView.bringSubview(toFront: self.cameraController.faceView)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        if let connection =  self.cameraController.previewLayer?.connection  {
-
-            let currentDevice: UIDevice = UIDevice.current
-
-            let orientation: UIDeviceOrientation = currentDevice.orientation
-
-            let previewLayerConnection : AVCaptureConnection = connection
-
-            if previewLayerConnection.isVideoOrientationSupported {
-                switch (orientation) {
-                case .portrait: updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
-
-                    break
-
-                case .landscapeRight: updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeLeft)
-
-                    break
-
-                case .landscapeLeft: updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeRight)
-
-                    break
-
-                case .portraitUpsideDown: updatePreviewLayer(layer: previewLayerConnection, orientation: .portraitUpsideDown)
-
-                    break
-
-                default: updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
-
-                    break
-                }
-            }
-        }
     }
     
     // captures image on screen
@@ -191,3 +163,4 @@ extension CameraViewController {
         // Dispose of any resources that can be recreated.
     }
 }
+
