@@ -33,7 +33,7 @@ class CameraController: NSObject {
     var currentComposition: Composition?
     var autoCaptureInProgress: Bool = false
     var captureTimer = Timer()
-    var timeLeft = 3
+    var timeLeft = 4
 }
 
 extension CameraController {
@@ -206,6 +206,24 @@ extension CameraController {
         
     }
     
+    func focusOnPoint(point: CGPoint, device: AVCaptureDevice?) {
+        if let device = device {
+            if device.isFocusPointOfInterestSupported {
+                do {
+                    try device.lockForConfiguration()
+                    
+                    device.focusPointOfInterest = point
+                    device.focusMode = .autoFocus
+                    device.exposurePointOfInterest = point
+                    device.exposureMode = AVCaptureDevice.ExposureMode.continuousAutoExposure
+                    device.unlockForConfiguration()
+                } catch {
+                    // do nothing
+                }
+            }
+        }
+    }
+    
     func captureImage(completion: @escaping (UIImage?, Error?) -> Void) {
         guard let captureSession = captureSession, captureSession.isRunning else { completion(nil, CameraControllerError.captureSessionIsMissing); return }
         
@@ -234,16 +252,17 @@ extension CameraController {
         }
 
         if self.faceView.eyesOpen && isFaceInPicZone  {
-            print(self.timeLeft) // debug printing
+            // frame becomes green when in a pic taking zone
+            self.faceView.layer.borderColor = UIColor.green.withAlphaComponent(0.7).cgColor
             self.timeLeft -= 1
             self.faceView.faceLabel.text = String(self.timeLeft)
-            // update text on timer (instead of a timer label, we could use what the face rect is... derp we should have done that from the start)
+            // update text on timer
             if self.timeLeft == 0 {
                 // change timer label to done
-                // remove the UILabel and sublayer
-                
+                self.faceView.faceLabel.text = String("Photo Taken and Saved")
+                // focus on center of face frame
+                self.focusOnPoint(point: CGPoint(x: self.faceView.frame.midX, y: self.faceView.frame.midY), device: self.currentCaptureDevice)
                 // takes a picture of the screen and saves it to photos
-                print("Picture taken")
                 self.captureImage { (image, error) in
                     guard let image = image else {
                         print(error ?? "Image capture error")
@@ -254,23 +273,23 @@ extension CameraController {
                         PHAssetChangeRequest.creationRequestForAsset(from: image)
                     }
                 }
-                    
+                
                 // invalidate the current timer
                 self.captureTimer.invalidate()
-                
                 // instatiate a new timer
                 self.captureTimer = Timer()
                 // reset timer
-                self.timeLeft = 3
+                self.timeLeft = 4
                 self.faceView.faceLabel.text = String(self.timeLeft)
                 // set this to false so another autoCapture session can begin again
                 self.autoCaptureInProgress = false
             }
         } else {
+            // set frame back to red
+            self.faceView.layer.borderColor = UIColor.red.withAlphaComponent(0.7).cgColor
             // else reset timer
-            self.timeLeft = 3
-            self.faceView.faceLabel.text = String(self.timeLeft)
-            
+            self.timeLeft = 4
+            self.faceView.faceLabel.text = String("Face Not in Auto Capture Zone or Eyes Not Visible")
         }
     }
 }
@@ -401,6 +420,7 @@ extension CameraController {
     //  updates facial rectangle from AVCaptureVideoDataOutputSampleBufferDelegate
     func update(with faceRect: CGRect, eyesOpen: Bool) {
         DispatchQueue.main.async {
+            
             UIView.animate(withDuration: 0.2) {
                 self.faceView.alpha = 0.5
                 self.faceView.frame = faceRect
@@ -441,17 +461,19 @@ extension CameraController {
 class FaceView: UIView {
     
     lazy var faceLabel: UILabel = {
-        let faceLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))
+        let faceLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.size.width/2, height: self.frame.size.height/2))
         faceLabel.textAlignment = .center
+        faceLabel.font = UIFont(name: faceLabel.font.fontName, size: 20)
         faceLabel.textColor = UIColor.white
-        faceLabel.adjustsFontSizeToFitWidth = true
+        faceLabel.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        
         return faceLabel
     }()
     
     var eyesOpen: Bool = false
     
     func setup() {
-        layer.borderColor = UIColor.red.withAlphaComponent(0.5).cgColor
+        layer.borderColor = UIColor.red.withAlphaComponent(0.7).cgColor
         layer.borderWidth = 5.0
         
         addSubview(faceLabel)
@@ -460,7 +482,7 @@ class FaceView: UIView {
     override var frame: CGRect {
         didSet(newFrame) {
             var faceFrame = faceLabel.frame
-            faceFrame = CGRect(x: 0, y: newFrame.size.height, width: newFrame.size.width * 2.0, height: newFrame.size.height / 2.0)
+            faceFrame = CGRect(x: 0, y: newFrame.size.height, width: newFrame.size.width, height: newFrame.size.height/4)
             faceLabel.frame = faceFrame
         }
     }

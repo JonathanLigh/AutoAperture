@@ -61,25 +61,7 @@ extension CameraViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             let y = 1.0 - touchPoint.location(in: previewView).x / screenSize.width
             let focusPoint = CGPoint(x: x, y: y)
             
-            focusOnPoint(point: focusPoint, device: self.cameraController.currentCaptureDevice)
-        }
-    }
-    
-    func focusOnPoint(point: CGPoint, device: AVCaptureDevice?) {
-        if let device = device {
-            if device.isFocusPointOfInterestSupported {
-                do {
-                    try device.lockForConfiguration()
-                    
-                    device.focusPointOfInterest = point
-                    device.focusMode = .autoFocus
-                    device.exposurePointOfInterest = point
-                    device.exposureMode = AVCaptureDevice.ExposureMode.continuousAutoExposure
-                    device.unlockForConfiguration()
-                } catch {
-                    // do nothing
-                }
-            }
+            self.cameraController.focusOnPoint(point: focusPoint, device: self.cameraController.currentCaptureDevice)
         }
     }
     
